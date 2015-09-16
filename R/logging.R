@@ -28,7 +28,7 @@ openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
   assert_that(is.logical(append))
   assert_that(is.logical(sink))
 
-  # Create logfile name and remove if already present and not appending
+  # Get logfile name; remove file if already present and not appending
   if(is.null(logfile)) {
     logfile <- file.path(outputdir(scriptname), paste0(scriptname, ".log.txt"))
   }
@@ -61,7 +61,8 @@ openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
 # -----------------------------------------------------------------------------
 #' Time-stamped output function
 #'
-#' @param msg One or more messages to log (optional)
+#' @param msg A message to log (optional)
+#' @param ... Additional items to log (optional)
 #' @param level Priority level (numeric, optional)
 #' @param ts Print preceding timestamp? (logical, optional)
 #' @param cr Print trailing newline? (logical, optional)

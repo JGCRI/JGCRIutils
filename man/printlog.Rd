@@ -7,7 +7,9 @@
 printlog(msg = "", ..., level = 0, ts = TRUE, cr = TRUE)
 }
 \arguments{
-\item{msg}{One or more messages to log (optional)}
+\item{msg}{A message to log (optional)}
+
+\item{...}{Additional items to log (optional)}
 
 \item{level}{Priority level (numeric, optional)}
 
