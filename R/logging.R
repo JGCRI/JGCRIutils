@@ -5,10 +5,10 @@
 #'
 #' @param scriptname Name of script (and thus logfile)
 #' @param loglevel Minimum priority level (numeric, optional)
-#' @param logfile Override default logfile (character, optional)
+#' @param logfile Override default logfile (character/connection, optional)
 #' @param append Append to logfile? (logical, optional)
 #' @param sink Sink to logfile? (logical, optional)
-#' @return Invisible success (TRUE) or failure (FALSE)
+#' @return Invisible fully-qualified name of log file
 #' @details Open a new logfile. Note that if \code{sink} is TRUE, all
 #' screen output will be captured (via \code{\link{base::sink}}).
 #' Re-opening a logfile will erase the previous output unless \code{append}
@@ -18,6 +18,12 @@
 #' @seealso \code{\link{printlog}} \code{\link{closelog}}
 openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
                     append = FALSE, sink = TRUE) {
+
+  # Sanity checks
+  assert_that(is.character(scriptname))
+  assert_that(is.numeric(loglevel))
+  assert_that(is.logical(append))
+  assert_that(is.logical(sink))
 
   # Create logfile name and remove if already present and not appending
   if(is.null(logfile)) {
@@ -29,6 +35,7 @@ openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
 
   # If log info already exists, close the previous file
   if(exists(".loginfo", envir = .GlobalEnv)) {
+    warning("Closing previous log file")
     closelog()
   }
 
@@ -45,6 +52,7 @@ openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
   }
 
   printlog("Opening", logfile)
+  invisible(logfile)
 } # openlog
 
 # -----------------------------------------------------------------------------
@@ -59,6 +67,12 @@ openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
 #' @export
 #' @seealso \code{\link{openlog}} \code{\link{closelog}}
 printlog <- function(msg = "", ..., level = 0, ts = TRUE, cr = TRUE) {
+
+  # Sanity checks
+  assert_that(is.character(msg))
+  assert_that(is.numeric(level))
+  assert_that(is.logical(ts))
+  assert_that(is.logical(cr))
 
   # Make sure there's an open log file available to close
   if(exists(".loginfo", envir = .GlobalEnv)) {
@@ -104,12 +118,15 @@ closelog <- function() {
   printlog("Closing", loginfo$logfile)
 
   # Print sessionInfo() to file
-  sink(loginfo$logfile, append = TRUE)
-  print(sessionInfo())
-  sink()
+  try({
+    sink(loginfo$logfile, append = TRUE)
+    print("-------")
+    print(sessionInfo())
+    sink()
+  })
 
   # Remove sink, if applicable, and the log info file
-  if(loginfo$sink) sink()
+  if(loginfo$sink & sink.number()) sink()
   try(rm(".loginfo", envir = .GlobalEnv), silent = TRUE)
 
   invisible(TRUE)
@@ -126,6 +143,11 @@ closelog <- function() {
 #' If caller specifies `scriptfolder=TRUE` (default), return OUTPUT_DIR/SCRIPTNAME
 #' @keywords internal
 outputdir <- function(scriptname, scriptfolder = TRUE) {
+
+  # Sanity checks
+  assert_that(is.character(scriptname))
+  assert_that(is.logical(scriptfolder))
+
   odir <- "./output/"   # TODO: should probably make this customizable
   if(scriptfolder)
     odir <- file.path(odir, sub(".R$", "", scriptname))

@@ -12,14 +12,14 @@ openlog(scriptname, loglevel = -Inf, logfile = NULL, append = FALSE,
 
 \item{loglevel}{Minimum priority level (numeric, optional)}
 
-\item{logfile}{Override default logfile (character, optional)}
+\item{logfile}{Override default logfile (character/connection, optional)}
 
 \item{append}{Append to logfile? (logical, optional)}
 
 \item{sink}{Sink to logfile? (logical, optional)}
 }
 \value{
-Invisible success (TRUE) or failure (FALSE)
+Invisible fully-qualified name of log file
 }
 \description{
 Open a new logfile
