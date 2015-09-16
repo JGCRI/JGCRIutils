@@ -1,9 +1,14 @@
 Package: JGCRIutils
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Joint Global Change Research Institute utilities
 Version: 0.1
 Date: 2015-09-15
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Description: A set of utilities supporting logging, working with data, data visualization, and reproducibility at the Joint Global Change Research Institute.
+Imports:
+    dplyr (>= 0.4.1),
+    assertthat (>= 0.1)
+Depends:
+    R (>= 3.1.0)
+License: MIT
 LazyData: TRUE
