@@ -5,3 +5,7 @@ To install this package:
 
 1. Make sure you have `devtools` installed from CRAN.
 2. `install_github("JGCRI/JGCRIutils")`
+
+Then:
+
+3. `library(JGCRIutils)`
