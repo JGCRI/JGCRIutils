@@ -8,4 +8,7 @@ To install this package:
 
 Then:
 
-3. `library(JGCRIutils)`
+```R
+library(JGCRIutils)
+help(package = 'JGCRIutils')
+```
