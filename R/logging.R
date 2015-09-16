@@ -1,5 +1,8 @@
 # JGCRIutils logging functions
 
+PKG.ENV <- new.env()    # environment that we store logging info in
+LOGINFO <- ".loginfo"   # name of storage variable
+
 # -----------------------------------------------------------------------------
 #' Open a new logfile
 #'
@@ -34,18 +37,18 @@ openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
   }
 
   # If log info already exists, close the previous file
-  if(exists(".loginfo", envir = .GlobalEnv)) {
+  if(exists(LOGINFO, envir = PKG.ENV)) {
     warning("Closing previous log file")
     closelog()
   }
 
-  # Create a (hidden) variable in the global environment to store log info
+  # Create a (hidden) variable in the package environment to store log info
   loginfo <- list(loglevel = loglevel,
                   logfile = logfile,
                   scriptname = scriptname,
                   sink = sink,
                   sink.number = sink.number())
-  assign(".loginfo", loginfo, envir = .GlobalEnv)
+  assign(LOGINFO, loginfo, envir = PKG.ENV)
 
   if(sink) {
     sink(logfile, split = TRUE, append = append)
@@ -75,8 +78,8 @@ printlog <- function(msg = "", ..., level = 0, ts = TRUE, cr = TRUE) {
   assert_that(is.logical(cr))
 
   # Make sure there's an open log file available to close
-  if(exists(".loginfo", envir = .GlobalEnv)) {
-    loginfo <- get(".loginfo", envir = .GlobalEnv)
+  if(exists(LOGINFO, envir = PKG.ENV)) {
+    loginfo <- get(LOGINFO, envir = PKG.ENV)
   } else {
     warning("No log file available")
     return(FALSE)
@@ -108,8 +111,8 @@ printlog <- function(msg = "", ..., level = 0, ts = TRUE, cr = TRUE) {
 closelog <- function() {
 
   # Make sure there's an open log file available to close
-  if(exists(".loginfo", envir = .GlobalEnv)) {
-    loginfo <- get(".loginfo", envir = .GlobalEnv)
+  if(exists(LOGINFO, envir = PKG.ENV)) {
+    loginfo <- get(LOGINFO, envir = PKG.ENV)
   } else {
     warning("No log file to close")
     return(FALSE)
@@ -127,7 +130,7 @@ closelog <- function() {
 
   # Remove sink, if applicable, and the log info file
   if(loginfo$sink & sink.number()) sink()
-  try(rm(".loginfo", envir = .GlobalEnv), silent = TRUE)
+  try(rm(LOGINFO, envir = PKG.ENV), silent = TRUE)
 
   invisible(TRUE)
 } # closelog
