@@ -1,5 +1,5 @@
 # JGCRIutils
-Common utilities for JGCRI work, to save people work and assist in documentation and reproducibility. In progress.
+Common utilities for [JGCRI](http://www.globalchange.umd.edu) work, to save people work and assist in documentation and reproducibility. In progress.
 
 To install this package:
 
