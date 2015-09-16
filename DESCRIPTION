@@ -5,10 +5,11 @@ Version: 0.1
 Date: 2015-09-15
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: A set of utilities supporting logging, working with data, data visualization, and reproducibility at the Joint Global Change Research Institute.
-Imports:
+Imports: 
     dplyr (>= 0.4.1),
     assertthat (>= 0.1)
-Depends:
+Depends: 
     R (>= 3.1.0)
 License: MIT
 LazyData: TRUE
+Suggests: testthat
