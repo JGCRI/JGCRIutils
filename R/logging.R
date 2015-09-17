@@ -143,7 +143,7 @@ closelog <- function(sessionInfo = TRUE) {
   # Print sessionInfo() to file
   if(sessionInfo) try({
     sink(loginfo$logfile, append = TRUE)
-    print("-------")
+    cat("-------\n")
     print(sessionInfo())
     sink()
   })
