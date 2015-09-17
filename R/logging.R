@@ -1,6 +1,6 @@
 # JGCRIutils logging functions
 
-PKG.ENV <- new.env()    # environment that we store logging info in
+PKG.ENV <- new.env()    # environment in which to store logging info
 LOGINFO <- ".loginfo"   # name of storage variable
 
 # -----------------------------------------------------------------------------
@@ -8,15 +8,22 @@ LOGINFO <- ".loginfo"   # name of storage variable
 #'
 #' @param scriptname Name of script (and thus logfile)
 #' @param loglevel Minimum priority level (numeric, optional)
-#' @param logfile Override default logfile (character/connection, optional)
+#' @param logfile Override default logfile (character or connection, optional)
 #' @param append Append to logfile? (logical, optional)
-#' @param sink Sink to logfile? (logical, optional)
+#' @param sink Send all console output to logfile? (logical, optional)
 #' @return Invisible fully-qualified name of log file
-#' @details Open a new logfile. Note that if \code{sink} is TRUE, all
-#' screen output will be captured (via \code{\link{base::sink}}).
+#' @details Open a new logfile. If \code{sink} is TRUE (the default), all
+#' screen output will be captured (via \code{\link{sink}}).
 #' Re-opening a logfile will erase the previous output unless \code{append}
-#' is TRUE. Finally, messages will only appear in the logfile if their
-#' \code{level} exceeds \code{loglevel}.
+#' is TRUE. Note that messages will only appear in the logfile if their
+#' \code{level} exceeds \code{loglevel}; this allows you to easily change
+#' the amount of detail being logged.
+#' @examples
+#' logfile <- openlog("test")
+#' printlog("message")
+#' print("This will also appear in the logfile, as sink is TRUE")
+#' closelog()
+#' readLines(logfile)
 #' @export
 #' @seealso \code{\link{printlog}} \code{\link{closelog}}
 openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
@@ -54,7 +61,7 @@ openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
     sink(logfile, split = TRUE, append = append)
   }
 
-  printlog("Opening", logfile)
+  printlog("Opening", logfile, level = Inf)
   invisible(logfile)
 } # openlog
 
@@ -68,6 +75,18 @@ openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
 #' @param cr Print trailing newline? (logical, optional)
 #' @return Invisible success (TRUE) or failure (FALSE)
 #' @details Logs a message, which may consist of one or more printable objects
+#' @examples
+#' logfile <- openlog("test")
+#' printlog("message")
+#' printlog(1, "plus", 1, "equals", 3)
+#' closelog()
+#' readLines(logfile)
+#'
+#' logfile <- openlog("test", loglevel = 1)
+#' printlog("This message will not appear", level = 0)
+#' printlog("This message will appear", level = 1)
+#' closelog(sessionInfo = FALSE)
+#' readLines(logfile)
 #' @export
 #' @seealso \code{\link{openlog}} \code{\link{closelog}}
 printlog <- function(msg = "", ..., level = 0, ts = TRUE, cr = TRUE) {
@@ -105,11 +124,12 @@ printlog <- function(msg = "", ..., level = 0, ts = TRUE, cr = TRUE) {
 # -----------------------------------------------------------------------------
 #' Close current logfile
 #'
+#' @param sessionInfo Print \code{\link{sessionInfo}} output? (logical, optional)
 #' @return Invisible success (TRUE) or failure (FALSE)
 #' @details Close current logfile
 #' @export
 #' @seealso \code{\link{openlog}} \code{\link{printlog}}
-closelog <- function() {
+closelog <- function(sessionInfo = TRUE) {
 
   # Make sure there's an open log file available to close
   if(exists(LOGINFO, envir = PKG.ENV)) {
@@ -119,10 +139,10 @@ closelog <- function() {
     return(FALSE)
   }
 
-  printlog("Closing", loginfo$logfile)
+  printlog("Closing", loginfo$logfile, level = Inf)
 
   # Print sessionInfo() to file
-  try({
+  if(sessionInfo) try({
     sink(loginfo$logfile, append = TRUE)
     print("-------")
     print(sessionInfo())
@@ -131,7 +151,7 @@ closelog <- function() {
 
   # Remove sink, if applicable, and the log info file
   if(loginfo$sink & sink.number()) sink()
-  try(rm(LOGINFO, envir = PKG.ENV), silent = TRUE)
+  try(rm(list = LOGINFO, envir = PKG.ENV), silent = TRUE)
 
   invisible(TRUE)
 } # closelog
@@ -152,7 +172,7 @@ outputdir <- function(scriptname, scriptfolder = TRUE) {
   assert_that(is.character(scriptname))
   assert_that(is.logical(scriptfolder))
 
-  odir <- "./output/"   # TODO: should probably make this customizable
+  odir <- "./output"   # TODO: should probably make this customizable
   if(scriptfolder)
     odir <- file.path(odir, sub(".R$", "", scriptname))
   if(!file.exists(odir))

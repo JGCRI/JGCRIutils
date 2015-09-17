@@ -12,11 +12,11 @@ openlog(scriptname, loglevel = -Inf, logfile = NULL, append = FALSE,
 
 \item{loglevel}{Minimum priority level (numeric, optional)}
 
-\item{logfile}{Override default logfile (character/connection, optional)}
+\item{logfile}{Override default logfile (character or connection, optional)}
 
 \item{append}{Append to logfile? (logical, optional)}
 
-\item{sink}{Sink to logfile? (logical, optional)}
+\item{sink}{Send all console output to logfile? (logical, optional)}
 }
 \value{
 Invisible fully-qualified name of log file
@@ -25,11 +25,19 @@ Invisible fully-qualified name of log file
 Open a new logfile
 }
 \details{
-Open a new logfile. Note that if \code{sink} is TRUE, all
-screen output will be captured (via \code{\link{base::sink}}).
+Open a new logfile. If \code{sink} is TRUE (the default), all
+screen output will be captured (via \code{\link{sink}}).
 Re-opening a logfile will erase the previous output unless \code{append}
-is TRUE. Finally, messages will only appear in the logfile if their
-\code{level} exceeds \code{loglevel}.
+is TRUE. Note that messages will only appear in the logfile if their
+\code{level} exceeds \code{loglevel}; this allows you to easily change
+the amount of detail being logged.
+}
+\examples{
+logfile <- openlog("test")
+printlog("message")
+print("This will also appear in the logfile, as sink is TRUE")
+closelog()
+readLines(logfile)
 }
 \seealso{
 \code{\link{printlog}} \code{\link{closelog}}

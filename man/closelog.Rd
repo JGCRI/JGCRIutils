@@ -4,7 +4,10 @@
 \alias{closelog}
 \title{Close current logfile}
 \usage{
-closelog()
+closelog(sessionInfo = TRUE)
+}
+\arguments{
+\item{sessionInfo}{Print \code{\link{sessionInfo}} output? (logical, optional)}
 }
 \value{
 Invisible success (TRUE) or failure (FALSE)

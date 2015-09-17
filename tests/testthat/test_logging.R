@@ -20,9 +20,6 @@ test_that("functions handle bad input", {
 })
 
 test_that("openlog handles special cases", {
-  #   LOGFILE <- "./output/test/test.log.txt"
-  #   if(file.exists(LOGFILE)) file.remove(LOGFILE)
-
   # Re-opening a log file should generate a warning
   LOGFILE <- openlog("test", sink = FALSE)
   expect_warning(openlog("test", sink = FALSE))
@@ -48,7 +45,28 @@ test_that("Basic logging works correctly", {
   oldsize <- file.size(LOGFILE)
   expect_true(printlog("Line 1"))
   expect_more_than(file.size(LOGFILE), oldsize)
+  oldsize <- file.size(LOGFILE)
   expect_true(closelog())
+})
+
+test_that("logging handles special cases", {
+
+  # suppressing sessionInfo data
+  LOGFILE <- openlog("test", sink = FALSE)
+  closelog()
+  oldsize <- file.size(LOGFILE)
+
+  openlog("test", sink = FALSE)
+  closelog(sessionInfo = FALSE)
+  expect_less_than(file.size(LOGFILE), oldsize)
+
+  # sink works correctly?
+  capture.output({
+    openlog("test", sink = TRUE)
+    print("hi")
+    closelog(sessionInfo = FALSE)
+  })
+  expect_equal(length(readLines(LOGFILE)), 3)
 })
 
 test_that("Priority levels work correctly", {

@@ -26,6 +26,19 @@ Time-stamped output function
 \details{
 Logs a message, which may consist of one or more printable objects
 }
+\examples{
+logfile <- openlog("test")
+printlog("message")
+printlog(1, "plus", 1, "equals", 3)
+closelog()
+readLines(logfile)
+
+logfile <- openlog("test", loglevel = 1)
+printlog("This message will not appear", level = 0)
+printlog("This message will appear", level = 1)
+closelog(sessionInfo = FALSE)
+readLines(logfile)
+}
 \seealso{
 \code{\link{openlog}} \code{\link{closelog}}
 }
