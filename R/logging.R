@@ -8,7 +8,7 @@ LOGINFO <- ".loginfo"   # name of storage variable
 #'
 #' @param scriptname Name of script (and thus logfile)
 #' @param loglevel Minimum priority level (numeric, optional)
-#' @param logfile Override default logfile (character or connection, optional)
+#' @param logfile Override default logfile (character or \code{\link{connection}}, optional)
 #' @param append Append to logfile? (logical, optional)
 #' @param sink Send all console output to logfile? (logical, optional)
 #' @return Invisible fully-qualified name of log file
@@ -92,7 +92,6 @@ openlog <- function(scriptname, loglevel = -Inf, logfile = NULL,
 printlog <- function(msg = "", ..., level = 0, ts = TRUE, cr = TRUE) {
 
   # Sanity checks
-  assert_that(is.character(msg))
   assert_that(is.numeric(level))
   assert_that(is.logical(ts))
   assert_that(is.logical(cr))

@@ -12,7 +12,7 @@ openlog(scriptname, loglevel = -Inf, logfile = NULL, append = FALSE,
 
 \item{loglevel}{Minimum priority level (numeric, optional)}
 
-\item{logfile}{Override default logfile (character or connection, optional)}
+\item{logfile}{Override default logfile (character or \code{\link{connection}}, optional)}
 
 \item{append}{Append to logfile? (logical, optional)}
 
