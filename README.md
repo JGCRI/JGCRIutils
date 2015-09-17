@@ -3,7 +3,7 @@ Common utilities for [JGCRI](http://www.globalchange.umd.edu) work, to save peop
 
 To install this package:
 
-1. Make sure you have `devtools` installed from CRAN.
+1. Make sure you have `devtools` installed from CRAN and loaded.
 2. `install_github("JGCRI/JGCRIutils")`
 
 Then:
